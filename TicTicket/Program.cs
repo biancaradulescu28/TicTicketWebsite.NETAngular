@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TicTicket.Data;
+using TicTicket.Helpers;
 using TicTicket.Helpers.Extensions;
 
 var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -23,7 +24,6 @@ builder.Services.AddDbContext<DataContext>(options => {
 
 builder.Services.AddRepositories();
 builder.Services.AddServices();
-
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

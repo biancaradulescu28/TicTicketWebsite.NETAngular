@@ -1,6 +1,6 @@
 ﻿namespace TicTicket.Models.DTOs
 {
-    public class UserDto
+    public class UserRegister
     {
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;

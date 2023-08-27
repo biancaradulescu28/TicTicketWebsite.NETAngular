@@ -24,21 +24,21 @@ namespace TicTicket.Controllers
             _addressService = addressService;
         }
 
-        [HttpGet]
+        [HttpGet("GetAllAddresses")]
         public async Task<IActionResult> GetAllAddresses()
         {
             return Ok(await _addressService.GetAll());
         }
 
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}/GetAddressById")]
         public async Task<IActionResult> GetAddressById(int id)
         {
             return Ok(await _addressService.GetById(id));
         }
 
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}/UpdateAddress")]
         public async Task<IActionResult> UpdateAddress(int id, AddressDto updatedAddress)
         {
             var existingAddress = await _addressService.GetById(id);
@@ -60,7 +60,7 @@ namespace TicTicket.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("AddAddress")]
         public async Task<IActionResult> AddAddress(AddressDto newAddress)
         {
             await this._addressService.AddAddress(newAddress);
@@ -69,7 +69,7 @@ namespace TicTicket.Controllers
 
 
         // DELETE: api/Events/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}/DeleteAddress")]
         public async Task<IActionResult> DeleteAddress(int id)
         {
             await this._addressService.DeleteAddress(id);

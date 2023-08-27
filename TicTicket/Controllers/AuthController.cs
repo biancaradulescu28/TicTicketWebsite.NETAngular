@@ -6,6 +6,9 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using TicTicket.Models;
 using TicTicket.Models.DTOs;
+using TicTicket.Models.Enums;
+using TicTicket.Services.AddressService;
+using TicTicket.Services.UserService;
 
 namespace TicTicket.Controllers
 {
@@ -13,86 +16,87 @@ namespace TicTicket.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        public static User user = new User();
-        private readonly IConfiguration _configuration;
+        public readonly IUserService _userService;
 
-        public AuthController(IConfiguration configuration)
+        public AuthController(IUserService userService)
         {
-            _configuration = configuration;
+            _userService = userService;
         }
 
-        [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(UserDto request)
+
+        [HttpGet("GetAllUsers")]
+        public async Task<IActionResult> GetAllUsers()
         {
-            CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
-
-            user.FirstName = request.FirstName; 
-            user.LastName = request.LastName;
-            user.Email = request.Email;
-            user.Age= request.Age;
-            user.PasswordHash= passwordHash;
-            user.PasswordSalt= passwordSalt;
-
-            return Ok(user);
-
+            return Ok(await _userService.GetAll());
         }
 
-        [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(UserDto request)
+
+        [HttpGet("{id}/GetUserById")]
+        public async Task<IActionResult> GetUsersById(int id)
         {
-            if(user.Email != request.Email)
+            return Ok(await _userService.GetById(id));
+        }
+
+        [HttpGet("{email}/GetUserByEmail")]
+        public User GetUsersByEmail(string email)
+        {
+            return _userService.GetByEmail(email);
+        }
+
+
+        [HttpPut("{id}/UpdateUser")]
+        public async Task<IActionResult> UpdateUser(int id, UserRegister updatedUser)
+        {
+            var existingUser = await _userService.GetById(id);
+
+
+            if (existingUser == null)
             {
-                return BadRequest("User not found. ");//TODO: Toast
-
+                return NotFound();
             }
 
-            if(!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
-            {
-                return BadRequest("Worng password. ");//TODO: Toast
-            }
-            string token = CreateToken(user);
-            return Ok(token);
+            existingUser.FirstName = updatedUser.FirstName;
+            existingUser.LastName = updatedUser.LastName;
+            existingUser.Age = updatedUser.Age;
+            _userService.CreatePasswordHash(updatedUser.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            existingUser.PasswordHash = passwordHash;
+            existingUser.PasswordSalt = passwordSalt;
+
+            await this._userService.UpdateUser(id);
+            return Ok();
+
         }
 
-        private string CreateToken(User user)
+
+        [HttpPost("CreateAdmin")]
+        public async Task<IActionResult> AddAdminUser(UserRegister newUser)
         {
-            List<Claim> claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.Id.ToString())
-            };
-
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-                _configuration.GetSection("AppSettings:Token").Value));
-
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-            var token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.AddDays(1),
-                signingCredentials: creds);
-
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-            return jwt;
-
+            await this._userService.AddAdmin(newUser);
+            return Ok();
         }
 
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt) 
-        { 
-            using(var hmac = new HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
-        }
 
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        [HttpDelete("{id}/DeleteUser")]
+        public async Task<IActionResult> DeleteUser(int id)
         {
-            using (var hmac = new HMACSHA512(user.PasswordSalt)) 
-            {
-                var computeHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return computeHash.SequenceEqual(passwordHash);
-            }
+            await this._userService.DeleteUser(id);
+            return Ok();
         }
+
+        [HttpPost("Register")]
+        public async Task<IActionResult> RegisterUser(UserRegister newUser)
+        {
+            await this._userService.Register(newUser);
+            return Ok();
+        }
+
+        [HttpPost("Login")]
+        public string Login(UserLogin request)
+        {
+            string result = _userService.Login(request);
+            return result;
+        }
+
 
     }
 }

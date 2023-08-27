@@ -18,16 +18,39 @@ namespace TicTicket.Services.EventService
 
         }
 
-        public async Task<List<EventDto>> GetAllEvents()
+        public async Task<List<Event>> GetAll()
         {
             var events = await _eventRepository.GetAll();
-            List<EventDto> result = _mapper.Map<List<EventDto>>(events);
-            return result;
+            return events;
         }
 
-        public Event GetById(int id)
+
+        public async Task<Event> GetById(int id)
         {
-            return _eventRepository.FindById(id);
+            var eventById = await _eventRepository.FindByIdAsync(id);
+            return eventById;
+
+        }
+
+        public Event GetByName(string name)
+        {
+            var eventByName = _eventRepository.FindByName(name);
+            return eventByName;
+
+        }
+
+        public async Task<List<Event>> GetByAge(int age)
+        {
+            var events = await _eventRepository.FindByAge(age);
+            return events;
+
+        }
+
+        public async Task<List<Event>> GetByDate(DateTime date)
+        {
+            var events = await _eventRepository.FindByDate(date);
+            return events;
+
         }
 
         public async Task AddEvent(EventDto newEvent)

@@ -63,7 +63,7 @@ namespace TicTicket.Repositories.GenericRepository
             return await _table.FindAsync(id);
         }
 
-        public TEntity? FindById(object id)
+        public TEntity FindById(object id)
         {
             return _table.Find(id);
         }

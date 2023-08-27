@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿using Newtonsoft.Json;
+using System.Data;
+using TicTicket.Models.Enums;
 
 namespace TicTicket.Models
 {
@@ -10,12 +12,11 @@ namespace TicTicket.Models
         public string Email { get; set; } = string.Empty;
         public int Age { get; set; } = 0;
         public List<Order>? Orders { get; set; }
-        public List<Ticket> Tickets { get; set; }
-
-        //[JsonIgnore]//nu o sa ia in calcul si passwordHash
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
+        public Role Role { get; set; }
 
-        //public Role Role { get; set; }
+        [JsonIgnore]
+        public List<Ticket> Tickets { get; set; }
     }
 }
