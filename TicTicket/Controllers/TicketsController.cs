@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TicTicket.Data;
 using TicTicket.Models;
+using TicTicket.Models.DTOs;
+using TicTicket.Services.EventService;
+using TicTicket.Services.TicketService;
 
 namespace TicTicket.Controllers
 {
@@ -14,111 +17,81 @@ namespace TicTicket.Controllers
     [ApiController]
     public class TicketsController : ControllerBase
     {
-        private readonly DataContext _context;
+        public readonly ITicketService _ticketService;
+        public readonly IEventService _eventService;
 
-        public TicketsController(DataContext context)
+        public TicketsController(ITicketService ticketService, IEventService eventService)
         {
-            _context = context;
+            _ticketService= ticketService;
+            _eventService= eventService;
         }
 
-        // GET: api/Tickets
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Ticket>>> GetTickets()
+        [HttpGet("GetAllTickets")]
+        public async Task<IActionResult> GetAllTickets()
         {
-          if (_context.Tickets == null)
-          {
-              return NotFound();
-          }
-            return await _context.Tickets.ToListAsync();
+            return Ok(await _ticketService.GetAll());
         }
 
-        // GET: api/Tickets/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Ticket>> GetTicket(int id)
-        {
-          if (_context.Tickets == null)
-          {
-              return NotFound();
-          }
-            var ticket = await _context.Tickets.FindAsync(id);
 
-            if (ticket == null)
+        [HttpGet("{id}/GetTicketById")]
+        public async Task<IActionResult> GetTicketById(int id)
+        {
+            return Ok(await _ticketService.GetById(id));
+        }
+
+
+        [HttpGet("{eventName}/GetTicketsByEvent")]
+        public async Task<List<Ticket>> GetTicketsByEvent(string eventName)
+        {
+            var foundEvent = _eventService.GetByName(eventName);
+            return await _ticketService.GetByEvent(foundEvent.Id);
+        }
+
+        [HttpGet("{price, eventName}/GetTicketsByPrice")]
+        public async Task<List<Ticket>> GetTicketsByPrice(double price, string eventName)
+        {
+            var ticketsTask = GetTicketsByEvent(eventName);
+            var tickets = await ticketsTask;
+            return _ticketService.GetByPrice(price, tickets);
+        }
+
+
+        [HttpPut("{id}/UpdateTicket")]
+        public async Task<IActionResult> UpdateEvent(int id, TicketDto updatedTicket)
+        {
+            var existingTicket = await _ticketService.GetById(id);
+
+
+            if (existingTicket == null)
             {
                 return NotFound();
             }
+            existingTicket.Seat = updatedTicket.Seat;
+            existingTicket.Price = updatedTicket.Price;
+            existingTicket.EventId = updatedTicket.EventId;
 
-            return ticket;
+            await this._ticketService.UpdateTicket(id);
+            return Ok();
+
         }
 
-        // PUT: api/Tickets/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTicket(int id, Ticket ticket)
+
+        [HttpPost("AddTicketToEvent")]
+        public async Task<IActionResult> AddTicketToEvent(TicketDto newTicket, int eventId)
         {
-            if (id != ticket.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(ticket).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TicketExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            await this._ticketService.AddTicketToEvent(newTicket, eventId);
+            return Ok();
         }
 
-        // POST: api/Tickets
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Ticket>> PostTicket(Ticket ticket)
-        {
-          if (_context.Tickets == null)
-          {
-              return Problem("Entity set 'DataContext.Tickets'  is null.");
-          }
-            _context.Tickets.Add(ticket);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTicket", new { id = ticket.Id }, ticket);
-        }
 
-        // DELETE: api/Tickets/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}/DeleteTicket")]
         public async Task<IActionResult> DeleteTicket(int id)
         {
-            if (_context.Tickets == null)
-            {
-                return NotFound();
-            }
-            var ticket = await _context.Tickets.FindAsync(id);
-            if (ticket == null)
-            {
-                return NotFound();
-            }
-
-            _context.Tickets.Remove(ticket);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            await this._ticketService.DeleteTicket(id);
+            return Ok();
         }
 
-        private bool TicketExists(int id)
-        {
-            return (_context.Tickets?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
+
     }
 }

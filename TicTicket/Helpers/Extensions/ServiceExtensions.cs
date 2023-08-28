@@ -6,8 +6,13 @@ using TicTicket.Repositories.CartRepository;
 using TicTicket.Repositories.EventRepository;
 using TicTicket.Repositories.OrderRepository;
 using TicTicket.Repositories.TicketRepository;
+using TicTicket.Repositories.TicketUserRepository;
 using TicTicket.Services.AddressService;
+using TicTicket.Services.CartService;
 using TicTicket.Services.EventService;
+using TicTicket.Services.OrderService;
+using TicTicket.Services.TicketService;
+using TicTicket.Services.TicketUserService;
 using TicTicket.Services.UserService;
 
 namespace TicTicket.Helpers.Extensions
@@ -22,6 +27,8 @@ namespace TicTicket.Helpers.Extensions
             services.AddTransient<ITicketRepository, TicketRepository>();
             services.AddTransient<IAddressRepository, AddressRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<ITicketUserRepository, TicketUserRepository>();
+
 
 
             return services;
@@ -32,6 +39,11 @@ namespace TicTicket.Helpers.Extensions
             services.AddTransient<IEventService, EventService>();
             services.AddTransient<IAddressService, AddressService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<ITicketService, TicketService>();
+            services.AddTransient<ITicketUserService, TicketUserService>();
+            services.AddTransient<ICartService, CartService>();
+            services.AddTransient<IOrderService, OrderService>();
+
 
 
             return services;

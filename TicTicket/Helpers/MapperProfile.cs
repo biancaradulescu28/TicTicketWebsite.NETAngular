@@ -12,6 +12,12 @@ namespace TicTicket.Helpers
             CreateMap<AddressDto, Address>();
             CreateMap<Event, EventDto>();
             CreateMap<EventDto, Event>();
+            CreateMap<TicketDto, Ticket>();
+            CreateMap<Ticket, TicketDto>();
+            CreateMap<Cart, CartDto>();
+            CreateMap<CartDto, Cart>();
+            CreateMap<OrderDto, Order>();
+            CreateMap<Order, OrderDto>();
 
         }
     }

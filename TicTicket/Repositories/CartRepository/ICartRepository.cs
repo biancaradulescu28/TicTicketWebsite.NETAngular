@@ -5,5 +5,6 @@ namespace TicTicket.Repositories.CartRepository
 {
     public interface ICartRepository: IGenericRepository<Cart>
     {
+        public Cart FindByUser(int userId);
     }
 }

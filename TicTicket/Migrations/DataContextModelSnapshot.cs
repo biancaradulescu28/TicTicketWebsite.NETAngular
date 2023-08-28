@@ -64,9 +64,6 @@ namespace TicTicket.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
@@ -95,7 +92,7 @@ namespace TicTicket.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("EndDate")
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
@@ -153,16 +150,13 @@ namespace TicTicket.Migrations
                     b.Property<int>("EventId")
                         .HasColumnType("int");
 
-                    b.Property<int>("OrderId")
+                    b.Property<int?>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
                     b.Property<string>("Seat")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -172,6 +166,38 @@ namespace TicTicket.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("Tickets");
+                });
+
+            modelBuilder.Entity("TicTicket.Models.TicketUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("TicketsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsersId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ticketId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("userId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ticketId");
+
+                    b.HasIndex("userId");
+
+                    b.ToTable("TicketsUsers");
                 });
 
             modelBuilder.Entity("TicTicket.Models.User", b =>
@@ -198,11 +224,9 @@ namespace TicTicket.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("PasswordHash")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.Property<byte[]>("PasswordSalt")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.Property<int>("Role")
@@ -264,20 +288,37 @@ namespace TicTicket.Migrations
             modelBuilder.Entity("TicTicket.Models.Ticket", b =>
                 {
                     b.HasOne("TicTicket.Models.Event", "Event")
-                        .WithMany("Tickets")
+                        .WithMany()
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("TicTicket.Models.Order", "Order")
                         .WithMany("Tickets")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderId");
 
                     b.Navigation("Event");
 
                     b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("TicTicket.Models.TicketUser", b =>
+                {
+                    b.HasOne("TicTicket.Models.Ticket", "ticket")
+                        .WithMany()
+                        .HasForeignKey("ticketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TicTicket.Models.User", "user")
+                        .WithMany()
+                        .HasForeignKey("userId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ticket");
+
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("TicketUser", b =>
@@ -293,11 +334,6 @@ namespace TicTicket.Migrations
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("TicTicket.Models.Event", b =>
-                {
-                    b.Navigation("Tickets");
                 });
 
             modelBuilder.Entity("TicTicket.Models.Order", b =>

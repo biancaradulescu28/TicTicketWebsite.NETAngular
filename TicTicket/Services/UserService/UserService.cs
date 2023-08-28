@@ -10,19 +10,23 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using TicTicket.Models.Enums;
 using NuGet.DependencyResolver;
+using TicTicket.Repositories.CartRepository;
+
 namespace TicTicket.Services.UserService
 {
     public class UserService: IUserService
     {
         public IUserRepository _userRepository;
+        public ICartRepository _cartRepository;
         public IMapper _mapper;
         private readonly IConfiguration _configuration;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, IConfiguration configuration)
+        public UserService(IUserRepository userRepository, IMapper mapper, IConfiguration configuration, ICartRepository cartRepository)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _configuration = configuration;
+            _cartRepository= cartRepository;
 
         }
 
@@ -63,6 +67,14 @@ namespace TicTicket.Services.UserService
 
             await _userRepository.CreateAsync(newDbUser);
             await _userRepository.SaveAsync();
+
+            var cart = new CartDto();
+            cart.UserId = newDbUser.Id;
+
+            var newDbCart = _mapper.Map<Cart>(cart);
+            newDbCart.User = newDbUser;
+            await _cartRepository.CreateAsync(newDbCart);
+            await _cartRepository.SaveAsync();
 
         }
 

@@ -9,5 +9,9 @@ namespace TicTicket.Repositories.CartRepository
         public CartRepository(DataContext context) : base(context)
         {
         }
+        public Cart FindByUser(int userId)
+        {
+            return _table.FirstOrDefault(x => x.UserId == userId);
+        }
     }
 }
