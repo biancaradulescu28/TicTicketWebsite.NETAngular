@@ -91,10 +91,18 @@ namespace TicTicket.Controllers
         }
 
         [HttpPost("Login")]
-        public string Login(UserLogin request)
+        public IActionResult Login(UserLogin request)
         {
-            string result = _userService.Login(request);
-            return result;
+            var res = _userService.Login(request);
+            if (res == "User not found.")
+            {
+                return BadRequest("User not found.");
+            }
+            else if(res == "Wrong password.")
+            {
+                return BadRequest("Wrong password.");
+            }
+            return Ok();
         }
 
 

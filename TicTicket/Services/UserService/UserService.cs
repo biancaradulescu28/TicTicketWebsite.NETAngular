@@ -101,16 +101,16 @@ namespace TicTicket.Services.UserService
             var foundUser = GetByEmail(request.Email);
             if (foundUser == null)
             {
-                return "User not found. ";//TODO: Toast
+                return "User not found.";//TODO: Toast
             }
 
 
             if (!VerifyPasswordHash(request.Password, foundUser.PasswordHash, foundUser.PasswordSalt))
             {
-                return "Wrong password. ";//TODO: Toast
+                return "Wrong password.";//TODO: Toast
             }
             var token = CreateToken(foundUser);
-            return token;
+            return "good";
         }
 
         public async Task UpdateUser(int Id)

@@ -1,4 +1,6 @@
-﻿namespace TicTicket.Models.DTOs
+﻿using TicTicket.Models.Enums;
+
+namespace TicTicket.Models.DTOs
 {
     public class UserRegister
     {

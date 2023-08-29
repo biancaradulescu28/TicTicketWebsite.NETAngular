@@ -1,0 +1,30 @@
+.header{
+    display: flex;
+    justify-content: center;
+}
+
+h1{
+    color:deeppink;
+    font-weight: bold;
+}
+
+.field{
+    display: flex;
+    justify-content: center;
+}
+
+.register{
+    display: flex;
+    justify-content: center;
+}
+
+.login{
+    display: flex;
+    justify-content: center;
+}
+
+.button{
+    width: 400px;
+    margin-top: 20px;
+    
+}

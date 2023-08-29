@@ -1,0 +1,53 @@
+<mat-card>
+    <mat-card-header class = "header">
+      <h1>Register</h1>
+    </mat-card-header>
+    <mat-card-content>
+      <form class="example-form" [formGroup]="registerform" (ngSubmit)="registration()">
+        <div>
+          <mat-form-field class="field">
+            <mat-label>Firstname</mat-label>
+            <input matInput formControlName="firstName">
+          </mat-form-field>
+        </div>
+  
+        <div>
+          <mat-form-field class="field">
+            <mat-label>Lastname</mat-label>
+            <input matInput formControlName="lastName">
+          </mat-form-field>
+        </div>
+  
+        <div>
+          <mat-form-field class="field">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email">
+          </mat-form-field>
+        </div>
+  
+        <div>
+          <mat-form-field class="field">
+            <mat-label>Age</mat-label>
+            <input matInput formControlName="age">
+          </mat-form-field>
+        </div>
+  
+        <div>
+          <mat-form-field class="field">
+            <mat-label>Password</mat-label>
+            <input type="password" matInput formControlName="password">
+            <mat-hint align="end">Min 6 characters</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <div class = "register">
+            <button class="button" mat-raised-button color="accent">Create account</button>
+        </div>
+        <div class = "login">   
+            <a  class="button" routerLink="/login" mat-raised-button color="accent">Already have an account</a>
+        </div>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+  
