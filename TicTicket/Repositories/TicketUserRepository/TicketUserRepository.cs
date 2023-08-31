@@ -11,16 +11,16 @@ namespace TicTicket.Repositories.TicketUserRepository
         public TicketUserRepository(DataContext context) : base(context)
         {
         }
-        public async Task<List<TicketUser>> FindByTicketId(int ticketId)
+        public List<TicketUser> FindByTicketId(int ticketId)
         {
-            return await _table.Where(x => x.TicketsId == ticketId).ToListAsync();
+            return _table.Where(x => x.ticketId == ticketId).ToList();
         }
 
         public async Task<TicketUser> FindByTicketIdInList(int ticketId, List<TicketUser>list)
         {
             foreach (var ticketUser in list)
             {
-                if (ticketUser.TicketsId == ticketId)
+                if (ticketUser.ticketId == ticketId)
                 {
                     return ticketUser;
                 }
@@ -29,14 +29,14 @@ namespace TicTicket.Repositories.TicketUserRepository
             
         }
 
-        public async Task<List<TicketUser>> FindByUserId(int userId)
+        public List<TicketUser> FindByUserId(int userId)
         {
-            return await _table.Where(x => x.UsersId == userId).ToListAsync();
+            return _table.Where(x => x.userId == userId).ToList();
         }
 
         public async Task<TicketUser> FindByBothIds(int userId, int ticketId)
         {
-            var ticketUsers = await FindByUserId(userId);
+            var ticketUsers = FindByUserId(userId);
             var tU = FindByTicketIdInList(ticketId, ticketUsers);
             return await tU;
 

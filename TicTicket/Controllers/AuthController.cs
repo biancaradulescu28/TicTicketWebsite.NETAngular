@@ -38,9 +38,9 @@ namespace TicTicket.Controllers
         }
 
         [HttpGet("{email}/GetUserByEmail")]
-        public User GetUsersByEmail(string email)
+        public async Task<User> GetUsersByEmail(string email)
         {
-            return _userService.GetByEmail(email);
+            return await _userService.GetByEmail(email);
         }
 
 
@@ -91,9 +91,9 @@ namespace TicTicket.Controllers
         }
 
         [HttpPost("Login")]
-        public IActionResult Login(UserLogin request)
+        public async Task<IActionResult> Login(UserLogin request)
         {
-            var res = _userService.Login(request);
+            var res = await _userService.Login(request);
             if (res == "User not found.")
             {
                 return BadRequest("User not found.");

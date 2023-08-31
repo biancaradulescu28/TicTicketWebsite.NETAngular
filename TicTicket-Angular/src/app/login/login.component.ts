@@ -29,7 +29,7 @@ export class LoginComponent {
           if(this.loginform.value.email!=null){
             sessionStorage.setItem('email', this.loginform.value.email);
           }
-          this.router.navigate(['']);
+          this.router.navigate(['/events']);
         },
         (error) => {
           if (error.status === 400) {
@@ -41,5 +41,7 @@ export class LoginComponent {
       this.toastr.warning('Please enter valid data');
     }
   }
+
+
 
 }

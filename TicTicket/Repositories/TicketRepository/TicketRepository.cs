@@ -12,9 +12,9 @@ namespace TicTicket.Repositories.TicketRepository
         {
         }
 
-        public async Task<List<Ticket>> FindByEvent(int eventId)
+        public List<Ticket> FindByEvent(int eventId)
         {
-            return await _table.Where(x => x.EventId == eventId).ToListAsync();
+            return  _table.Where(x => x.EventId == eventId).ToList();
         }
 
         public async Task<List<Ticket>> FindByPrice(double price)
@@ -22,6 +22,10 @@ namespace TicTicket.Repositories.TicketRepository
             return await _table.Where(x => x.Price == price).ToListAsync();
         }
 
+        public async Task<List<Ticket>> FindByType(int typeId)
+        {
+            return await _table.Where(x => x.TicketTypesId == typeId).ToListAsync();
+        }
 
     }
 }

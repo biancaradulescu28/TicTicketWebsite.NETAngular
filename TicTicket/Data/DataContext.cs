@@ -14,5 +14,8 @@ namespace TicTicket.Data
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<TicketUser> TicketsUsers { get; set; }
+        public DbSet<TicketTypes> TicketTypes { get; set; }
+
+
     }
 }

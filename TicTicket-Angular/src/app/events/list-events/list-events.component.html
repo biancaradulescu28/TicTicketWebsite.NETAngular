@@ -12,7 +12,7 @@
             <td>{{item.startDate}}</td>
             <td>{{item.endDate}}</td>
             <td>
-                <a class="tickets" routerLink="/login" mat-raised-button>Tickets</a>
+                <a class="tickets" (click)="goToEventDetails(item)" routerLink="/event" mat-raised-button>Tickets</a>
             </td>
         </tr>
     </tbody>

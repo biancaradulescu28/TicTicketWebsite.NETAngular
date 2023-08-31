@@ -7,9 +7,9 @@ namespace TicTicket.Models
     public class TicketUser
     {
         public int Id { get; set; }
-        public int TicketsId { get; set; }
+        public int ticketId { get; set; }
         public Ticket ticket { get; set; }
-        public int UsersId { get; set; }
+        public int userId { get; set; }
         public User user { get; set; }
         public Status status { get; set; }
     }

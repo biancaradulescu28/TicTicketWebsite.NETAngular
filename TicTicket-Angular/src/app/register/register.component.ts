@@ -38,6 +38,12 @@ export class RegisterComponent {
     }
   }
 
+  goToEvents() {
+    if(this.registerform.valid){
+      this.router.navigate(['/login']); 
+    }
+  }
+
 
 
 }

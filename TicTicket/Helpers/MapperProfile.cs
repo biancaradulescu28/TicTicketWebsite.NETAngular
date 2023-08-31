@@ -18,6 +18,12 @@ namespace TicTicket.Helpers
             CreateMap<CartDto, Cart>();
             CreateMap<OrderDto, Order>();
             CreateMap<Order, OrderDto>();
+            CreateMap<TicketTypeDto, TicketTypes>();
+            CreateMap<TicketTypes, TicketTypeDto>();
+            CreateMap<TicketUserDto, TicketUser>();
+            CreateMap<TicketUser, TicketUserDto>();
+
+
 
         }
     }

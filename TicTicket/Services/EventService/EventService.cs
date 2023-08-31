@@ -3,18 +3,24 @@ using NuGet.DependencyResolver;
 using TicTicket.Models;
 using TicTicket.Models.DTOs;
 using TicTicket.Repositories.EventRepository;
+using TicTicket.Repositories.TicketTypesRepository;
+using TicTicket.Services.TicketTypesService;
 
 namespace TicTicket.Services.EventService
 {
     public class EventService: IEventService
     {
         public IEventRepository _eventRepository;
+        public ITicketTypesRepository _ticketTypesRepository;
+        public ITicketTypesService _ticketTypesService;
         public IMapper _mapper;
 
-        public EventService(IEventRepository eventRepository, IMapper mapper)
+        public EventService(IEventRepository eventRepository, IMapper mapper, ITicketTypesRepository ticketTypesRepository, ITicketTypesService ticketTypesService)
         {
             _eventRepository = eventRepository;
             _mapper = mapper;
+            _ticketTypesRepository = ticketTypesRepository;
+            _ticketTypesService = ticketTypesService;
 
         }
 
@@ -73,6 +79,9 @@ namespace TicTicket.Services.EventService
             _eventRepository.Delete(eventToDelete);
             await _eventRepository.SaveAsync();
         }
+
+
+
 
 
 

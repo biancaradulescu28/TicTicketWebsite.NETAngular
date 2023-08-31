@@ -19,13 +19,7 @@ export class AuthService {
   login(data:any){
     return this.http.post(this.APiUrl + '/Auth/Login', data);
   }
-
-  loggedInUserEmail(){
-    return sessionStorage.getItem('email')?.toString;
-  }
-
-  isloggedIn(data:any){
-    var email = this.loggedInUserEmail;
+  isloggedIn(email: any):any{
     return this.http.get(this.APiUrl + `/Auth/${email}/GetUserByEmail`);
   }
   

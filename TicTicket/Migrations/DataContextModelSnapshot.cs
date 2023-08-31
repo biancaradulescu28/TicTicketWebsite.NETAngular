@@ -22,6 +22,21 @@ namespace TicTicket.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("EventTicketTypes", b =>
+                {
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TicketTypesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("EventId", "TicketTypesId");
+
+                    b.HasIndex("TicketTypesId");
+
+                    b.ToTable("EventTicketTypes");
+                });
+
             modelBuilder.Entity("TicTicket.Models.Address", b =>
                 {
                     b.Property<int>("Id")
@@ -159,13 +174,38 @@ namespace TicTicket.Migrations
                     b.Property<string>("Seat")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("TicketTypesId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("EventId");
 
                     b.HasIndex("OrderId");
 
+                    b.HasIndex("TicketTypesId");
+
                     b.ToTable("Tickets");
+                });
+
+            modelBuilder.Entity("TicTicket.Models.TicketTypes", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TicketTypes");
                 });
 
             modelBuilder.Entity("TicTicket.Models.TicketUser", b =>
@@ -175,12 +215,6 @@ namespace TicTicket.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("TicketsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsersId")
-                        .HasColumnType("int");
 
                     b.Property<int>("status")
                         .HasColumnType("int");
@@ -252,6 +286,21 @@ namespace TicTicket.Migrations
                     b.ToTable("TicketUser");
                 });
 
+            modelBuilder.Entity("EventTicketTypes", b =>
+                {
+                    b.HasOne("TicTicket.Models.Event", null)
+                        .WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TicTicket.Models.TicketTypes", null)
+                        .WithMany()
+                        .HasForeignKey("TicketTypesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("TicTicket.Models.Cart", b =>
                 {
                     b.HasOne("TicTicket.Models.User", "User")
@@ -297,9 +346,15 @@ namespace TicTicket.Migrations
                         .WithMany("Tickets")
                         .HasForeignKey("OrderId");
 
+                    b.HasOne("TicTicket.Models.TicketTypes", "TicketTypes")
+                        .WithMany()
+                        .HasForeignKey("TicketTypesId");
+
                     b.Navigation("Event");
 
                     b.Navigation("Order");
+
+                    b.Navigation("TicketTypes");
                 });
 
             modelBuilder.Entity("TicTicket.Models.TicketUser", b =>

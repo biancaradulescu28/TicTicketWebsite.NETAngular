@@ -4,7 +4,8 @@ namespace TicTicket.Models.DTOs
 {
     public class TicketUserDto
     {
-        public int TicketsId { get; set; } = 0;
-        public int UsersId { get; set; } = 0;
+        public int ticketId { get; set; }
+        public int userId { get; set; }
+
     }
 }

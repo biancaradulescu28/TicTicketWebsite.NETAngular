@@ -40,19 +40,26 @@ namespace TicTicket.Controllers
         }
 
 
-        [HttpGet("{eventName}/GetTicketsByEvent")]
-        public async Task<List<Ticket>> GetTicketsByEvent(string eventName)
+        [HttpGet("{eventId}/GetTicketsByEvent")]
+        public List<Ticket> GetTicketsByEvent(int eventId)
         {
-            var foundEvent = _eventService.GetByName(eventName);
-            return await _ticketService.GetByEvent(foundEvent.Id);
+            return _ticketService.GetByEvent(eventId);
         }
 
         [HttpGet("{price, eventName}/GetTicketsByPrice")]
-        public async Task<List<Ticket>> GetTicketsByPrice(double price, string eventName)
+        public async Task<List<Ticket>> GetTicketsByPrice(double price, int eventId)
         {
-            var ticketsTask = GetTicketsByEvent(eventName);
-            var tickets = await ticketsTask;
+            var ticketsTask = GetTicketsByEvent(eventId);
+            var tickets = ticketsTask;
             return _ticketService.GetByPrice(price, tickets);
+        }
+
+        [HttpGet("{price, eventName}/GetTicketsByType")]
+        public async Task<List<Ticket>> GetTicketsByType(int typeId, int eventId)
+        {
+            var ticketsTask = GetTicketsByEvent(eventId);
+            var tickets = ticketsTask;
+            return _ticketService.GetByType(typeId, tickets);
         }
 
 
@@ -75,11 +82,21 @@ namespace TicTicket.Controllers
 
         }
 
+        [HttpPut("{id}/AddTypeToTicket")]
+        public async Task<IActionResult> AddTypeToTicket(int id, int typeId)
+        {
+            await _ticketService.AddTypeToTicket(id, typeId);
+
+
+            return Ok();
+
+        }
+
 
         [HttpPost("AddTicketToEvent")]
-        public async Task<IActionResult> AddTicketToEvent(TicketDto newTicket, int eventId)
+        public async Task<IActionResult> AddTicketToEvent(TicketDto newTicket, int eventId, double price)
         {
-            await this._ticketService.AddTicketToEvent(newTicket, eventId);
+            await this._ticketService.AddTicketToEvent(newTicket, eventId, price);
             return Ok();
         }
 

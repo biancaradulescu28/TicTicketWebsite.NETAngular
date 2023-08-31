@@ -10,6 +10,7 @@ using TicTicket.Data;
 using TicTicket.Models;
 using TicTicket.Models.DTOs;
 using TicTicket.Services.EventService;
+using TicTicket.Services.TicketTypesService;
 
 namespace TicTicket.Controllers
 {
@@ -18,10 +19,12 @@ namespace TicTicket.Controllers
     public class EventsController : ControllerBase
     {
         public readonly IEventService _eventService;
+        public readonly ITicketTypesService _ticketTypesService;
 
-        public EventsController(IEventService eventService)
+        public EventsController(IEventService eventService, ITicketTypesService ticketTypesService)
         {
             _eventService = eventService;
+            _ticketTypesService = ticketTypesService;
         }
 
         [HttpGet("GetAllEvents")]
@@ -35,6 +38,12 @@ namespace TicTicket.Controllers
         public async Task<IActionResult> GetEventById(int id)
         {
             return Ok(await _eventService.GetById(id));
+        }
+
+        [HttpGet("{id}/GetEventTypes")]
+        public List<TicketTypes> GetEventTypes(int id)
+        {
+            return _ticketTypesService.GetTypesForEvent(id);
         }
 
         [HttpGet("{name}/GetEventByName")]
@@ -76,10 +85,22 @@ namespace TicTicket.Controllers
             existingEvent.AgeLimit = updatedEvent.AgeLimit;
             existingEvent.AddressId = existingEvent.AddressId;
 
+
+
             await this._eventService.UpdateEvent(id);
             return Ok();
 
         }
+
+        [HttpPut("{id}/AddTicketType")]
+        public async Task<Event> AddTicketType(int id, int typeId)
+        {
+            await _ticketTypesService.addTicketTypeToEvent(id,typeId);
+            var eventFound = await _eventService.GetById(id);
+            return eventFound;
+
+        }
+
 
 
         [HttpPost("AddEvent")]
@@ -97,5 +118,7 @@ namespace TicTicket.Controllers
             await this._eventService.DeleteEvent(id);
             return Ok();
         }
+
+
     }
 }

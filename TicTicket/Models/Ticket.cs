@@ -5,6 +5,11 @@ namespace TicTicket.Models
     public class Ticket
     {
         public int Id { get; set; }
+
+        public int? TicketTypesId { get; set; }
+
+        [JsonIgnore]
+        public TicketTypes? TicketTypes { get; set; }
         public string? Seat { get; set; } = string.Empty;
         public double Price { get; set; } = 0;
 
@@ -19,7 +24,7 @@ namespace TicTicket.Models
         public Order? Order { get; set; }
 
         [JsonIgnore]
-        public List<User> Users { get; set; }
+        public List<User>? Users { get; set; }
         //many to many cu user cat timp biletele sunt in cart
     }
 }

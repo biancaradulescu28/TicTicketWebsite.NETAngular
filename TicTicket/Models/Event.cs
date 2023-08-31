@@ -14,6 +14,9 @@ namespace TicTicket.Models
         public int NrTicketsAvailable { get; set; } = 0;
         public int AgeLimit { get; set; } = 0;//?
         public int AddressId { get; set; }//FK Address
+
+        [JsonIgnore]
+        public List<TicketTypes>? TicketTypes { get; set; }
         public Address? Address { get; set; }
 
     }

@@ -44,9 +44,9 @@ namespace TicTicket.Services.UserService
 
         }
 
-        public User GetByEmail(string email)
+        public async Task<User> GetByEmail(string email)
         {
-            var userByEmail = _userRepository.FindByEmail(email);
+            var userByEmail = await _userRepository.FindByEmail(email);
             return userByEmail;
 
         }
@@ -96,9 +96,9 @@ namespace TicTicket.Services.UserService
 
         }
 
-        public string Login(UserLogin request)
+        public async Task<string> Login(UserLogin request)
         {
-            var foundUser = GetByEmail(request.Email);
+            var foundUser = await _userRepository.FindByEmail(request.Email);
             if (foundUser == null)
             {
                 return "User not found.";//TODO: Toast

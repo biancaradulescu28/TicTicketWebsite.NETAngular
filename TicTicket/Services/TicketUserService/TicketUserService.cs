@@ -5,18 +5,24 @@ using TicTicket.Repositories.EventRepository;
 using TicTicket.Repositories.TicketUserRepository;
 using TicTicket.Models.Enums;
 using Microsoft.AspNetCore.Mvc;
+using TicTicket.Services.TicketService;
+using TicTicket.Services.EventService;
 
 namespace TicTicket.Services.TicketUserService
 {
     public class TicketUserService : ITicketUserService
     {
         public ITicketUserRepository _ticketUserRepository;
+        public ITicketService _ticketService;
+        public IEventService _eventService;
         public IMapper _mapper;
 
-        public TicketUserService(ITicketUserRepository ticketUserRepository, IMapper mapper)
+        public TicketUserService(ITicketUserRepository ticketUserRepository, IMapper mapper, ITicketService ticketService, IEventService eventService)
         {
             _ticketUserRepository = ticketUserRepository;
             _mapper = mapper;
+            _ticketService = ticketService;
+            _eventService = eventService;
         }
 
         public async Task<List<TicketUser>> GetAll()
@@ -26,16 +32,16 @@ namespace TicTicket.Services.TicketUserService
         }
 
 
-        public async Task<List<TicketUser>> GetByTicketId(int ticketId)
+        public List<TicketUser> GetByTicketId(int ticketId)
         {
-            var ticketUsers = await _ticketUserRepository.FindByTicketId(ticketId);
+            var ticketUsers =  _ticketUserRepository.FindByTicketId(ticketId);
             return ticketUsers;
 
         }
 
-        public async Task<List<TicketUser>> GetByUserId(int userId)
+        public List<TicketUser> GetByUserId(int userId)
         {
-            var ticketUsers = await _ticketUserRepository.FindByUserId(userId);
+            var ticketUsers = _ticketUserRepository.FindByUserId(userId);
             return ticketUsers;
 
         }
@@ -47,11 +53,18 @@ namespace TicTicket.Services.TicketUserService
 
         }
 
-        public async Task AddTicketUser(TicketUserDto newTicketUser)
+        public async Task AddTicketUser(int ticketId, int userId)
         {
+            var newTicketUser = new TicketUserDto();
+            newTicketUser.ticketId= ticketId;
+            newTicketUser.userId= userId;
             var newDbTU = _mapper.Map<TicketUser>(newTicketUser);
-            await _ticketUserRepository.CreateAsync(newDbTU);
-            await _ticketUserRepository.SaveAsync();
+            if(_ticketUserRepository.FindByBothIds(newDbTU.userId, newDbTU.ticketId) == null)
+            {
+                await _ticketUserRepository.CreateAsync(newDbTU);
+                await _ticketUserRepository.SaveAsync();
+            }
+            
         }
 
         public async Task UpdateTicketUser(int ticketId, int userId)
@@ -61,16 +74,16 @@ namespace TicTicket.Services.TicketUserService
             await _ticketUserRepository.SaveAsync();
         }
 
-        public async Task DeleteTicketUser(int ticketId, int userId)
+        public async Task DeleteTicketUser(int id)
         {
-            var ToDelete = await _ticketUserRepository.FindByBothIds(userId, ticketId);
+            var ToDelete = await _ticketUserRepository.FindByIdAsync(id);
             _ticketUserRepository.Delete(ToDelete);
             await _ticketUserRepository.SaveAsync();
         }
 
-        public async Task<List<TicketUser>> GetAllTicketsInUsersCart(int userId)
+        public List<TicketUser> GetAllTicketsInUsersCart(int userId)
         {
-            var tU = await GetByUserId(userId);
+            var tU = GetByUserId(userId);
             var ok = 0;
             var cartList = new List<TicketUser>();
             foreach (var t in tU)
@@ -88,9 +101,21 @@ namespace TicTicket.Services.TicketUserService
             return cartList;
         }
 
-        public async Task<List<TicketUser>> GetAllTicketsBoughtByUser(int userId)
+        public async Task<List<Ticket>> GetAllTicketsInCart(int userId)
         {
-            var tU = await GetByUserId(userId);
+            var cartList = GetAllTicketsInUsersCart(userId);
+            var ticketsList = new List<Ticket>();
+            foreach (var t in cartList)
+            {
+                var ticket = await _ticketService.GetById(t.ticketId);
+                ticketsList.Add(ticket);
+            }
+            return ticketsList;
+        }
+
+        public List<TicketUser> GetAllTicketsBoughtByUser(int userId)
+        {
+            var tU =  GetByUserId(userId);
             var bougthList = new List<TicketUser>();
             foreach (var t in tU)
             {
@@ -115,12 +140,23 @@ namespace TicTicket.Services.TicketUserService
             existingTU.status = Status.Bought;
 
             await UpdateTicketUser(ticketId, userId);
+
+            var ticket = await _ticketService.GetById(ticketId);
+            var eventFound = await _eventService.GetById(ticket.EventId);
+            if (eventFound == null)
+            {
+                return "no";
+            }
+            eventFound.NrTicketsAvailable = eventFound.NrTicketsAvailable - 1;
+            _eventService.UpdateEvent(eventFound.Id);
+
             return "Status changed to Bought!";
 
         }
 
         public async Task<string> StatusCart(int ticketId, int userId)
         {
+            var TUList = GetByTicketId(ticketId);
             var existingTU = await GetByUserAndTicketId(userId, ticketId);
 
 
@@ -136,5 +172,7 @@ namespace TicTicket.Services.TicketUserService
             return "Status changed to Cart!";
 
         }
+
+   
     }
 }

@@ -14,6 +14,8 @@ import { ToastrModule } from 'ngx-toastr';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { SingleEventComponent } from './single-event/single-event.component';
+import { CartComponent } from './cart/cart.component';
+import { CartListComponent } from './cart/cart-list/cart-list.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,9 @@ import { SingleEventComponent } from './single-event/single-event.component';
     ListEventsComponent,
     RegisterComponent,
     LoginComponent,
-    SingleEventComponent
+    SingleEventComponent,
+    CartComponent,
+    CartListComponent
   ],
   imports: [
     BrowserModule,

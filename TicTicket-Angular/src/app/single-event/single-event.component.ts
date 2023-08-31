@@ -1,9 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { SingleEventService } from '../single-event.service';
+import { CartService } from '../cart.service';
+import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
-
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { TicketUser } from '../ticket-user.model';
+// import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-single-event',
@@ -12,11 +17,67 @@ import { Router } from '@angular/router';
 })
 export class SingleEventComponent {
 
+  eventName: string | null = sessionStorage.getItem('eventName');
+  eventDetails: any;
+  ticketDetails: any;
+  cartDetails: any;
+  userResponse: any;
+  ticketUser: TicketUser = {
+    ticketsId: 0,
+    usersId: 0,   
+  };
+  email: string | null = sessionStorage.getItem('email');
+
+  ticketList$!:Observable<any[]>;
+
   constructor(private builder:FormBuilder, private toastr:ToastrService,
-    private service:SingleEventService, private router:Router){
+    private service:SingleEventService, private router:Router, private cartservice: CartService, private authservice: AuthService){
 
   }
 
+
+  async ngOnInit(): Promise<void> {
+    if (this.eventName) {
+      try {
+        this.eventDetails = await this.service.getEventByName(this.eventName).toPromise();
+        const tickets = await this.service.getEventTickets(this.eventDetails.id).toPromise();
   
+        if (tickets && tickets.length > 0) {
+          this.ticketDetails = tickets[0];
+        }
+
+        this.userResponse = await this.authservice.isloggedIn(this.email).toPromise();
+        this.ticketUser.ticketsId = this.ticketDetails.id;
+        this.ticketUser.usersId = this.userResponse.id;
+
+
+      } catch (error) {
+        console.error('Error fetching data', error);
+      }
+    }
+  }
+
+
+
+  async addToCart(data: TicketUser) {
+    if(this.userResponse!=null){
+      await this.service.addTicketUser(this.ticketDetails.id, this.userResponse.id,data).toPromise();
+      await this.service.addTicketToCart(this.ticketDetails.id, this.userResponse.id, data).toPromise();
+      this.cartDetails = await this.cartservice.getCartDetails(this.userResponse.id).toPromise();
+    }
+  }
+
+  ngAfterViewInit(): void {
+    const buyButton = document.getElementById('buyTicketButton');
+    if (buyButton) {
+      buyButton.addEventListener('shown.bs.modal', () => {
+        this.addToCart(this.ticketUser);
+      });
+    }
+  }
+
+  // goToCart() {
+  //   this.router.navigate(['/cart']); 
+  // }
 
 }

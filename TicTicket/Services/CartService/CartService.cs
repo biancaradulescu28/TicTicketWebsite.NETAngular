@@ -54,11 +54,11 @@ namespace TicTicket.Services.CartService
 
         public async Task<List<Ticket>> GetAllTicketsInCart(int userId)
         {
-            var tU = await _ticketUserService.GetAllTicketsInUsersCart(userId);
+            var tU =  _ticketUserService.GetAllTicketsInUsersCart(userId);
             var tickets = new List<Ticket>();
             foreach (var t in tU)
             {
-                var ticket = await _ticketService.GetById(t.TicketsId);
+                var ticket = await _ticketService.GetById(t.ticketId);
                 tickets.Add(ticket);
             }
             return tickets;

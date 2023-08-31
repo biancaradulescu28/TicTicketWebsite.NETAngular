@@ -1,1 +1,52 @@
-<p>single-event works!</p>
+<mat-card>
+    <mat-card-header class="header">
+        <mat-card-title>{{eventDetails.name}}</mat-card-title>
+        <mat-card-subtitle>Start date:  {{eventDetails.startDate}}</mat-card-subtitle>
+        <mat-card-subtitle>End date:  {{eventDetails.endDate}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-card class="description">
+            <mat-card-header>
+                <p class="desc">Description</p>
+            </mat-card-header>
+            <mat-card-content>
+                <p class="text">{{eventDetails.description}}</p>
+            </mat-card-content>
+        </mat-card>
+        <div class="flex-container">
+            <div>
+                <p class="nrTickets">Maximum number of tickets: {{ eventDetails.nrTickets }}</p>
+                <p class="nrTickets">Number tickets available: {{ eventDetails.nrTicketsAvailable}}</p>
+                <p class="nrTickets">Price ticket: {{ticketDetails.price}}</p>
+            </div>
+
+            <!-- Button trigger modal -->
+            <button type="button" mat-raised-button color="primary" data-bs-toggle="modal" data-bs-target="#exampleModal" (click)="addToCart(ticketUser)">
+                Buy ticket
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Ticket successfully added to cart!</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Price: {{ticketDetails.price}}</p>
+                            <!-- Cart Amount: {{cartDetails.price}} -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <a type="button" class="btn btn-primary" routerLink="/cart">Go to Cart</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+
+    </mat-card-content>
+</mat-card>

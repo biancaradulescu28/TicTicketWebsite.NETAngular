@@ -13,5 +13,6 @@ namespace TicTicket.Services.EventService
         public Event GetByName(string name);
         public Task<List<Event>> GetByAge(int age);
         public Task<List<Event>> GetByDate(DateTime date);
+
     }
 }

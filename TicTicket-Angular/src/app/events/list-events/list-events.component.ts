@@ -18,6 +18,12 @@ export class ListEventsComponent implements OnInit{
     this.eventList$ = this.service.getAllEventsList();
   }
 
+  goToEventDetails(event: any) {
+    sessionStorage.setItem('eventName', event.name);
+    sessionStorage.setItem('eventId', event.id);
+  }
+
+ 
   
 
 }
