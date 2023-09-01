@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { SingleEventService } from '../single-event.service';
-import { CartService } from '../cart.service';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TicketUser } from '../ticket-user.model';
+import { DatePipe } from '@angular/common';
 // import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -21,7 +21,9 @@ export class SingleEventComponent {
   eventDetails: any;
   ticketDetails: any;
   cartDetails: any;
+  addressDetails: any;
   userResponse: any;
+  data: any;
   ticketUser: TicketUser = {
     ticketsId: 0,
     usersId: 0,   
@@ -31,7 +33,8 @@ export class SingleEventComponent {
   ticketList$!:Observable<any[]>;
 
   constructor(private builder:FormBuilder, private toastr:ToastrService,
-    private service:SingleEventService, private router:Router, private cartservice: CartService, private authservice: AuthService){
+    private service:SingleEventService, private router:Router, private authservice: AuthService,
+    private datePipe: DatePipe){
 
   }
 
@@ -46,9 +49,11 @@ export class SingleEventComponent {
           this.ticketDetails = tickets[0];
         }
 
-        this.userResponse = await this.authservice.isloggedIn(this.email).toPromise();
+        this.userResponse = await this.authservice.isloggedIn(this.email);
         this.ticketUser.ticketsId = this.ticketDetails.id;
         this.ticketUser.usersId = this.userResponse.id;
+
+        this.addressDetails = await this.service.getAddressById(this.eventDetails.addressId).toPromise();
 
 
       } catch (error) {
@@ -59,11 +64,10 @@ export class SingleEventComponent {
 
 
 
-  async addToCart(data: TicketUser) {
-    if(this.userResponse!=null){
+  async addToCart(data: any) {
+    if(this.userResponse!=null && this.ticketDetails!=null){
       await this.service.addTicketUser(this.ticketDetails.id, this.userResponse.id,data).toPromise();
-      await this.service.addTicketToCart(this.ticketDetails.id, this.userResponse.id, data).toPromise();
-      this.cartDetails = await this.cartservice.getCartDetails(this.userResponse.id).toPromise();
+      this.cartDetails = await this.service.getCartDetails(this.userResponse.id).toPromise();
     }
   }
 
@@ -76,8 +80,8 @@ export class SingleEventComponent {
     }
   }
 
-  // goToCart() {
-  //   this.router.navigate(['/cart']); 
-  // }
+  formatDate(date: Date): string|null {
+    return this.datePipe.transform(date, 'dd-MM-yyyy');
+  }
 
 }

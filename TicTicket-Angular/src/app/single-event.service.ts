@@ -29,10 +29,13 @@ export class SingleEventService {
     return this.http.post(this.APiUrl + `/TicketsUsers/${userId}/${ticketId}/AddTicketUser`, data)
   }
 
-  addTicketToCart(ticketId: number, userId:number, data:any){
-    return this.http.put(this.APiUrl + `/TicketsUsers/${userId}/${ticketId}/StatusCart`, data)
+  getCartDetails(userId: any): any{
+    return this.http.get(this.APiUrl + `/Carts/${userId}/GetCartByUser`);
   }
 
+  getAddressById(addId: any){
+    return this.http.get(this.APiUrl + `/Addresses/${addId}/GetAddressById`);
+  }
   
 
 

@@ -14,14 +14,21 @@ export class CartService {
 
   }
 
-  getCartDetails(userId: number){
-    return this.http.get(this.APiUrl + `/Carts/${userId}/GetCartByUser`);
+  async getCartListForUser(userId: number): Promise<any[] | undefined> {
+    try {
+      const response = await this.http.get<any[]>(this.APiUrl + `/TicketsUsers/${userId}/GetAllTicketsInCart`).toPromise();
+      return response;
+    } catch (error) {
+      console.error('Error fetching cart list:', error);
+      return undefined;
+    }
   }
 
-  getCartListForUser(userId: number):Observable<any[]>{
-    return this.http.get<any>(this.APiUrl + `/TicketsUsers/${userId}/GetAllTicketsInCart`);
-
+  MakeOrder(userId:number, data:any){
+    return this.http.post(this.APiUrl + `Orders/${userId}/MakeOrder`, data)
   }
+  
+
 
 
 }

@@ -1,6 +1,28 @@
-<br>
-<app-cart-list></app-cart-list>
+<p>cart works!</p>
+<table class="table table-striped">
+    <thead>
+        <th>Event</th>
+        <th>Start date</th>
+        <th>End date</th>
+        <th>Price</th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of ticketList$">
+            <td *ngIf = "getEventDetails(item.eventId)">{{eventDetails.name}}</td>
+            <td *ngIf = "getEventDetails(item.eventId)">{{ formatDate(eventDetails.startDate)}}</td>
+            <td *ngIf = "getEventDetails(item.eventId)">{{formatDate(eventDetails.endDate)}}</td>
+            <td>{{item.price}}</td>
+            <!-- <td>
+                <a class="tickets" (click)="goToEventDetails(item)" routerLink="/event" mat-raised-button>Tickets</a>
+            </td> --> 
+        </tr>
+    </tbody>
+</table>
 
 <div>
-    <button class="button" mat-raised-button color="accent">Place Order</button>
+<div class = "cart_details">
+    <p class = "dinDiv">Number Items: {{cartDetails.quantity}}</p>
+    <p class = "dinDiv">Total price: {{cartDetails.price}} RON</p>
+    <button class="place-order-button"  mat-raised-button color="accent" (click)="MakeOrder()" routerLink="/events">Place Order</button>
+</div>
 </div>

@@ -38,3 +38,66 @@ mat-card-title {
     align-items: center;
 }
 
+.address {
+    font-size: 18px;
+    margin-top: 40px;
+    margin-left: 30px;
+    font-weight: bold;
+    color:chocolate;
+}
+
+.addressDet1 {
+    margin-left: 30px;
+}
+
+.addressDet1::before {
+    font-weight: bold;
+    content: "Country:  ";
+    margin-right: 8px;
+  }
+
+.addressDet2 {
+    margin-left: 30px;
+}
+
+.addressDet2::before {
+    font-weight: bold;
+    content: "City:  ";
+    margin-right: 8px;
+  }
+
+  .addressDet3 {
+    margin-left: 30px;
+}
+
+.addressDet3::before {
+    font-weight: bold;
+    content: "Street:  ";
+    margin-right: 8px;
+  }
+
+.addressDet4 {
+    margin-left: 30px;
+}
+
+.addressDet4::before {
+    font-weight: bold;
+    content: "Number:  ";
+    margin-right: 8px;
+  }
+
+.nrTickets::before {
+    font-weight: bold;
+    content: "Maximum number of tickets: ";
+}
+
+.nrTickets1::before {
+    font-weight: bold;
+    content: "Number tickets available: ";
+}
+
+.nrTickets2::before {
+    font-weight: bold;
+    content: "Price ticket: ";
+}
+

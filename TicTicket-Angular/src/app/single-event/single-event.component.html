@@ -1,27 +1,33 @@
 <mat-card>
     <mat-card-header class="header">
         <mat-card-title>{{eventDetails.name}}</mat-card-title>
-        <mat-card-subtitle>Start date:  {{eventDetails.startDate}}</mat-card-subtitle>
-        <mat-card-subtitle>End date:  {{eventDetails.endDate}}</mat-card-subtitle>
+        <mat-card-subtitle>Start date:  {{ formatDate(eventDetails.startDate) }}</mat-card-subtitle>
+        <mat-card-subtitle>End date:  {{ formatDate(eventDetails.endDate) }}</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
         <mat-card class="description">
             <mat-card-header>
-                <p class="desc">Description</p>
+                <p class="desc">Description </p>
             </mat-card-header>
             <mat-card-content>
                 <p class="text">{{eventDetails.description}}</p>
+                <p class = "address">Address:</p>
+                <p class = "addressDet1">{{addressDetails.country}}</p>
+                <p class = "addressDet2">{{addressDetails.city}}</p>
+                <p class = "addressDet3">{{addressDetails.street}}</p>
+                <p class = "addressDet4">{{addressDetails.number}}</p>
             </mat-card-content>
         </mat-card>
+        
         <div class="flex-container">
             <div>
-                <p class="nrTickets">Maximum number of tickets: {{ eventDetails.nrTickets }}</p>
-                <p class="nrTickets">Number tickets available: {{ eventDetails.nrTicketsAvailable}}</p>
-                <p class="nrTickets">Price ticket: {{ticketDetails.price}}</p>
+                <p class = "nrTickets">{{ eventDetails.nrTickets }}</p>
+                <p class = "nrTickets1">{{ eventDetails.nrTicketsAvailable}}</p>
+                <p class = "nrTickets2">{{ticketDetails.price}} RON</p>
             </div>
 
             <!-- Button trigger modal -->
-            <button type="button" mat-raised-button color="primary" data-bs-toggle="modal" data-bs-target="#exampleModal" (click)="addToCart(ticketUser)">
+            <button type="button" mat-raised-button color="primary" data-bs-toggle="modal" data-bs-target="#exampleModal" (click)="addToCart(data)">
                 Buy ticket
             </button>
 
@@ -34,7 +40,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <p>Price: {{ticketDetails.price}}</p>
+                            <p>Price: {{ticketDetails.price}} RON</p>
                             <!-- Cart Amount: {{cartDetails.price}} -->
                         </div>
                         <div class="modal-footer">

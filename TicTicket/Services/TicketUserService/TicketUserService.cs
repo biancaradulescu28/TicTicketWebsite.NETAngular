@@ -53,18 +53,16 @@ namespace TicTicket.Services.TicketUserService
 
         }
 
-        public async Task AddTicketUser(int ticketId, int userId)
+        public async Task<TicketUser> AddTicketUser(int ticketId, int userId)
         {
             var newTicketUser = new TicketUserDto();
             newTicketUser.ticketId= ticketId;
             newTicketUser.userId= userId;
             var newDbTU = _mapper.Map<TicketUser>(newTicketUser);
-            if(_ticketUserRepository.FindByBothIds(newDbTU.userId, newDbTU.ticketId) == null)
-            {
-                await _ticketUserRepository.CreateAsync(newDbTU);
-                await _ticketUserRepository.SaveAsync();
-            }
-            
+            await _ticketUserRepository.CreateAsync(newDbTU);
+            await _ticketUserRepository.SaveAsync();
+            return newDbTU;
+
         }
 
         public async Task UpdateTicketUser(int ticketId, int userId)
@@ -129,17 +127,12 @@ namespace TicTicket.Services.TicketUserService
 
         public async Task<string> StatusBought(int ticketId, int userId)
         {
-            var existingTU = await GetByUserAndTicketId(userId, ticketId);
-
-
-            if (existingTU == null)
+            var TUList = GetByTicketId(ticketId);
+            foreach(var t in TUList)
             {
-                return "Not found!";
+                t.status = Status.Bought;
+                await UpdateTicketUser(t.ticketId,t.userId);
             }
-
-            existingTU.status = Status.Bought;
-
-            await UpdateTicketUser(ticketId, userId);
 
             var ticket = await _ticketService.GetById(ticketId);
             var eventFound = await _eventService.GetById(ticket.EventId);
@@ -148,15 +141,14 @@ namespace TicTicket.Services.TicketUserService
                 return "no";
             }
             eventFound.NrTicketsAvailable = eventFound.NrTicketsAvailable - 1;
-            _eventService.UpdateEvent(eventFound.Id);
+            await _eventService.UpdateEvent(eventFound.Id);
 
             return "Status changed to Bought!";
 
         }
 
         public async Task<string> StatusCart(int ticketId, int userId)
-        {
-            var TUList = GetByTicketId(ticketId);
+        { 
             var existingTU = await GetByUserAndTicketId(userId, ticketId);
 
 

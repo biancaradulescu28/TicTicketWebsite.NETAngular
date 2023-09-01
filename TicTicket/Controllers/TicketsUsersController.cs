@@ -120,9 +120,9 @@ namespace TicTicket.Controllers
 
 
         [HttpPost("{userId}/{ticketId}/AddTicketUser")]
-        public async Task<IActionResult> AddTicketUser(int ticketId, int userId)
+        public async Task<TicketUser> AddTicketUser(int ticketId, int userId)
         {
-            await this._ticketUserService.AddTicketUser(ticketId, userId);
+            var TU = await this._ticketUserService.AddTicketUser(ticketId, userId);
             await StatusCart(ticketId, userId);
             
             //update detaii cart cu noul ticket
@@ -131,7 +131,7 @@ namespace TicTicket.Controllers
             existingCart.Quantity = await _cartService.CalculateQuantity(userId);
             existingCart.Price = await _cartService.CalculatePrice(userId);
             await _cartService.UpdateCart(existingCart.Id);
-            return Ok();
+            return TU;
         }
 
 

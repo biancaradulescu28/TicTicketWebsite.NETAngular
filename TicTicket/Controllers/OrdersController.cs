@@ -76,7 +76,7 @@ namespace TicTicket.Controllers
             var quantity = await _cartService.CalculateQuantity(userId);
             foreach (var ticket in tickets)
             {
-                await _ticketUserService.StatusBought(userId, ticket.Id);
+                await _ticketUserService.StatusBought(ticket.Id, userId);
             }
             newOrder.Tickets = tickets;
             newOrder.Quantity = quantity;
