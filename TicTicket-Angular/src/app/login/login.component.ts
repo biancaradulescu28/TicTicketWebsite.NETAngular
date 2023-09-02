@@ -21,42 +21,42 @@ export class LoginComponent {
     password:this.builder.control('',Validators.compose([Validators.required, Validators.pattern('^.{6,}$')])),
   });
 
-  // async continuelogin() {
-  //   if (this.loginform.valid) {
-  //     this.service.login(this.loginform.value).subscribe(
-  //       () => {
-  //         this.toastr.success('Logged in successfully!');
-  //         if(this.loginform.value.email!=null){
-  //           sessionStorage.setItem('email', this.loginform.value.email);
-  //         }
-  //         this.router.navigate(['/events']);
-  //       },
-  //       (error) => {
-  //         if (error.status === 400) {
-  //           this.toastr.error('Email or password incorrect!');
-  //         }
-  //       }
-  //     );
-  //   } else {
-  //     this.toastr.warning('Please enter valid data');
-  //   }
-  // }
-  
-  async continuelogin() {
+  continuelogin() {
     if (this.loginform.valid) {
-      try{
-        const response = this.service.login(this.loginform.value);
-        this.toastr.success('Logged in successfully!');
+      this.service.login(this.loginform.value).subscribe(
+        () => {
+          this.toastr.success('Logged in successfully!');
           if(this.loginform.value.email!=null){
             sessionStorage.setItem('email', this.loginform.value.email);
           }
           this.router.navigate(['/events']);
-      }catch(error){
-        this.toastr.error('Email or password incorrect!');
-        throw error;
-      }
+        },
+        (error) => {
+          if (error.status === 400) {
+            this.toastr.error('Email or password incorrect!');
+          }
+        }
+      );
+    } else {
+      this.toastr.warning('Please enter valid data');
+    }
   }
-}
+  
+//   async continuelogin() {
+//     if (this.loginform.valid) {
+//       try{
+//         const response = this.service.login(this.loginform.value);
+//         this.toastr.success('Logged in successfully!');
+//           if(this.loginform.value.email!=null){
+//             sessionStorage.setItem('email', this.loginform.value.email);
+//           }
+//           this.router.navigate(['/events']);
+//       }catch(error){
+//         this.toastr.error('Email or password incorrect!');
+//         throw error;
+//       }
+//   }
+// }
 
 
 

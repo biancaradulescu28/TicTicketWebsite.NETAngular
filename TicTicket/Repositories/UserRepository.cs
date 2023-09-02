@@ -11,7 +11,7 @@ namespace TicTicket.Repositories
         {
         }
 
-        public async Task<User> FindByEmail(string email)
+        public User FindByEmail(string email)
         {
             return _table.FirstOrDefault(x => x.Email == email);
         }

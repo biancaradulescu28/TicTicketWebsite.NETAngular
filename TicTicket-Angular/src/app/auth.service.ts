@@ -16,24 +16,17 @@ export class AuthService {
     return this.http.post(this.APiUrl + '/Auth/Register', data);
   }
 
-  async login(data: any): Promise<any> {
-    try {
-      const response = await this.http.post(this.APiUrl + '/Auth/Login', data).toPromise();
-      return response;
-    } catch (error) {
-      console.error('Error during login:', error);
-      throw error; // Aruncăm eroarea mai departe pentru a putea trata cazurile de eroare în componentă.
-    }
+  login(data:any){
+    return this.http.post(this.APiUrl + '/Auth/Login', data);
   }
 
-  async isloggedIn(email: any): Promise<any> {
-  try {
-    const response = await this.http.get(this.APiUrl + `/Auth/${email}/GetUserByEmail`).toPromise();
-    return response;
-  } catch (error) {
-    console.error('Error during user retrieval:', error);
-    throw error; // Aruncăm eroarea mai departe pentru a putea trata cazurile de eroare în componentă.
+  loggedInUserEmail(){
+    return sessionStorage.getItem('email')?.toString;
   }
-}
-  
-}
+
+  isloggedIn(data:any){
+    var email = this.loggedInUserEmail;
+    return this.http.get(this.APiUrl + `/Auth/${email}/GetUserByEmail`);
+  }
+
+} 

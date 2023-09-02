@@ -26,23 +26,35 @@ export class RegisterComponent {
     password:this.builder.control('',Validators.compose([Validators.required, Validators.pattern('^.{6,}$')])),
   });
 
-  registration(){
-    if(this.registerform.valid){
-      this.service.register(this.registerform.value).subscribe(res => {
+  // registration(){
+  //   if(this.registerform.valid){
+  //     this.service.register(this.registerform.value).subscribe(res => {
+  //       this.toastr.success('Registered successfully!');
+  //       this.router.navigate(['login']);
+  //     });
+  //   }
+  //   else{
+  //     this.toastr.warning('Please enter valid data');
+  //   }
+  // }
+
+  async registration() {
+    if (this.registerform.valid) {
+      try {
+        await this.service.register(this.registerform.value).toPromise();
         this.toastr.success('Registered successfully!');
         this.router.navigate(['login']);
-      });
-    }
-    else{
+  
+      } catch (error) {
+        console.error('Error during registration:', error);
+        this.toastr.error('An error occurred during registration. Please try again.');
+      }
+    } else {
       this.toastr.warning('Please enter valid data');
     }
   }
+  
 
-  goToEvents() {
-    if(this.registerform.valid){
-      this.router.navigate(['/login']); 
-    }
-  }
 
 
 

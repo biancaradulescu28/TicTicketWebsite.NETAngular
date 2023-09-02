@@ -6,6 +6,6 @@ namespace TicTicket.Repositories
 {
     public interface IUserRepository: IGenericRepository<User>
     {
-        Task<User> FindByEmail(string email);
+        User FindByEmail(string email);
     }
 }
