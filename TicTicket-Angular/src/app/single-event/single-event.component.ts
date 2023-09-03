@@ -49,7 +49,8 @@ export class SingleEventComponent {
           this.ticketDetails = tickets[0];
         }
 
-        this.userResponse = await this.authservice.isloggedIn(this.email);
+        this.userResponse = this.userResponsethis.authservice.isloggedIn(this.email);
+
         this.ticketUser.ticketsId = this.ticketDetails.id;
         this.ticketUser.usersId = this.userResponse.id;
 

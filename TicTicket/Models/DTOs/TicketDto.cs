@@ -10,7 +10,5 @@ namespace TicTicket.Models.DTOs
         public double Price { get; set; } = 0;
         public int EventId { get; set; }//FK Event
 
-        [JsonIgnore]
-        public Event? Event { get; set; }
     }
 }

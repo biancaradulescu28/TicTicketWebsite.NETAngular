@@ -14,7 +14,5 @@ namespace TicTicket.Models.DTOs
         public int AgeLimit { get; set; } = 0;//?
         public int AddressId { get; set; } = 1;
 
-        [JsonIgnore]
-        public List<TicketTypes> TicketTypes { get; set; } = new List<TicketTypes>();
     }
 }

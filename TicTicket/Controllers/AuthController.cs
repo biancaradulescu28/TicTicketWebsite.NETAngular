@@ -38,7 +38,7 @@ namespace TicTicket.Controllers
         }
 
         [HttpGet("{email}/GetUserByEmail")]
-        public async Task<User> GetUsersByEmail(string email)
+        public User GetUsersByEmail(string email)
         {
             return _userService.GetByEmail(email);
         }
