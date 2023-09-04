@@ -23,7 +23,7 @@ export class LoginComponent {
 
   continuelogin() {
     if (this.loginform.valid) {
-      this.service.login(this.loginform.value).subscribe(
+         this.service.login(this.loginform.value).subscribe(
         () => {
           this.toastr.success('Logged in successfully!');
           if(this.loginform.value.email!=null){
